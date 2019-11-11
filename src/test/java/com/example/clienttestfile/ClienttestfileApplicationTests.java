@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -13,7 +14,6 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
 @SpringBootTest
@@ -21,16 +21,8 @@ import java.io.*;
 class ClienttestfileApplicationTests {
 
 
-    static RestTemplate restTemplate;
-
-    @BeforeAll
-    static void init() {
-        restTemplate = new RestTemplate();
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setBufferRequestBody(false);
-        restTemplate = new RestTemplate(requestFactory);
-    }
-
+    @Autowired
+    RestTemplate restTemplate;
 
 
 
@@ -65,7 +57,7 @@ class ClienttestfileApplicationTests {
         };
 
         Thread.sleep(10000);
-        restTemplate.execute("http://localhost:8081/download/1", HttpMethod.GET, requestCallback, clientHttpResponse -> {
+        restTemplate.execute("http://localhost:8082/download", HttpMethod.GET, requestCallback, clientHttpResponse -> {
             File tempFile = File.createTempFile("test2-download", ".pdf");
             try (OutputStream os = new FileOutputStream(tempFile)) {
                 IOUtils.copy(clientHttpResponse.getBody(), os);
